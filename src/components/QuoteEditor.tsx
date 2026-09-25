@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { Quote } from '../types/quote'
 import { createEmptyLineItem } from '../types/quote'
 import { copyQuoteSummary } from '../utils/copySummary'
@@ -26,6 +26,7 @@ export function QuoteEditor({
   saving,
 }: QuoteEditorProps) {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle')
+  const copyResetTimerRef = useRef<number | null>(null)
 
   const subtotal = useMemo(() => quoteSubtotal(quote), [quote])
   const vatAmount = useMemo(() => quoteVatAmount(quote, subtotal), [quote, subtotal])
@@ -35,14 +36,26 @@ export function QuoteEditor({
     onChange({ ...quote, ...patch, updatedAt: Date.now() })
   }
 
-  async function handleCopy() {
-    try {
-      await copyQuoteSummary(quote)
-      setCopyState('copied')
-      window.setTimeout(() => setCopyState('idle'), 2000)
-    } catch {
-      setCopyState('error')
+  function scheduleCopyIdleReset() {
+    if (copyResetTimerRef.current != null) {
+      window.clearTimeout(copyResetTimerRef.current)
     }
+    copyResetTimerRef.current = window.setTimeout(() => {
+      setCopyState('idle')
+      copyResetTimerRef.current = null
+    }, 1800)
+  }
+
+  function handleCopy() {
+    setCopyState('copied')
+    scheduleCopyIdleReset()
+    void copyQuoteSummary(quote).catch(() => {
+      if (copyResetTimerRef.current != null) {
+        window.clearTimeout(copyResetTimerRef.current)
+        copyResetTimerRef.current = null
+      }
+      setCopyState('error')
+    })
   }
 
   return (
@@ -58,8 +71,14 @@ export function QuoteEditor({
         <div className="editor-toolbar-actions">
           <button
             type="button"
-            className="btn btn-secondary"
-            onClick={() => void handleCopy()}
+            className={`btn btn-secondary${copyState === 'copied' ? ' btn-copy-success' : ''}`}
+            onClick={handleCopy}
+            aria-live="polite"
+            aria-label={
+              copyState === 'copied'
+                ? 'Quote summary copied to clipboard'
+                : 'Copy quote summary to clipboard'
+            }
           >
             {copyState === 'copied' ? 'Copied' : 'Copy summary'}
           </button>

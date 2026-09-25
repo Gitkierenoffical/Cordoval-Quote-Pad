@@ -237,6 +237,15 @@ textarea {
   background: #e2e8f0;
 }
 
+.btn-copy-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.btn-copy-success:hover:not(:disabled) {
+  background: #bbf7d0;
+}
+
 .btn-ghost {
   background: transparent;
   color: #475569;
