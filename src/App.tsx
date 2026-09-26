@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { downloadBackup, loadBackupFromFile } from './backup/backup'
 import { BackupControls } from './components/BackupControls'
+import { BuildHouseDailyAd } from './components/BuildHouseDailyAd'
 import { PersistNotice } from './components/PersistNotice'
 import { QuoteEditor } from './components/QuoteEditor'
 import { QuoteList } from './components/QuoteList'
@@ -190,6 +191,8 @@ export default function App() {
           />
         )}
       </main>
+
+      <BuildHouseDailyAd />
 
       <footer className="app-footer">
         <p>
