@@ -155,6 +155,41 @@ textarea {
   color: var(--muted);
 }
 
+.build-house-daily-ad {
+  max-width: 52rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.build-house-daily-ad__link {
+  display: block;
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.build-house-daily-ad__link:hover {
+  text-decoration: none;
+}
+
+.build-house-daily-ad__link:focus {
+  outline: none;
+}
+
+.build-house-daily-ad__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.build-house-daily-ad__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .app-footer {
   border-top: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.85);
